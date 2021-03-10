@@ -1,4 +1,7 @@
 /Assets/Photon/PhotonUnityNetworking/Resources/
+/Assets/Photon/PhotonVoice/PhotonVoiceLibs/iOS/
+/Assets/Photon/PhotonVoice/PhotonVoiceLibs/OSX/
+/Assets/Photon/PhotonChat/
 
 /[Ll]ibrary/
 /[Tt]emp/
