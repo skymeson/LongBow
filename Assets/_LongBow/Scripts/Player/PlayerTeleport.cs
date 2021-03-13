@@ -173,7 +173,7 @@ namespace LongBow
                 }
                 _updatedColor.a = 1;
                 lineRenderer.startColor = _updatedColor;
-                _updatedColor.a = 0;
+                //_updatedColor.a = 0;
                 lineRenderer.endColor = _updatedColor;
                 lineRenderer.startWidth = initialLineWidth;
                 targetMarker.SetActive(isValidDestination);

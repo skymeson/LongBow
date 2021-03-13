@@ -745,11 +745,10 @@ MonoBehaviour:
   invalidTeleportColor: {r: 1, g: 0, b: 0, a: 1}
   CollisionLayers:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 193
   ValidLayers:
     serializedVersion: 2
-    m_Bits: 1
-  maxRange: 20
+    m_Bits: 64
   segmentCount: 100
   simulationVelocity: 500
   segmentScale: 0.5
@@ -1424,11 +1423,10 @@ MonoBehaviour:
   invalidTeleportColor: {r: 1, g: 0, b: 0, a: 1}
   CollisionLayers:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 193
   ValidLayers:
     serializedVersion: 2
-    m_Bits: 1
-  maxRange: 20
+    m_Bits: 64
   segmentCount: 100
   simulationVelocity: 500
   segmentScale: 0.5
