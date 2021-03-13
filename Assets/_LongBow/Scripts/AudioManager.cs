@@ -1,4 +1,7 @@
-﻿namespace LongBow
+﻿/// <summary>
+/// Basic audio player singleton.
+/// </summary>
+namespace LongBow
 {
     using UnityEngine;
 

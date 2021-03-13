@@ -1,4 +1,7 @@
-﻿namespace LongBow
+﻿/// <summary>
+/// Handle all the logic needed for the main menu.
+/// </summary>
+namespace LongBow
 {
     using Photon.Pun;
     using Photon.Realtime;
@@ -29,13 +32,6 @@
         {
             keyboard = GetComponent<UiKeyboard>();
             keyboard.CallbackMenu = this;
-
-            var _cam = Camera.main;
-            var _canvas = GetComponentInChildren<Canvas>();
-            if (_cam && _canvas)
-            {
-                _canvas.worldCamera = _cam;
-            }
         }
 
         private void Start()
@@ -95,19 +91,24 @@
             settingsUpdated.Raise();
         }
 
+        /// <summary>
+        /// Call when the join game button is pressed.
+        /// </summary>
         public void OnJoinGamePressed()
         {
             joinButton.SetActive(false);
             menuPanel.SetActive(false);
-            //keyboard.EnableKeyboard("PlayerName");
             StartCoroutine(DelayPanelRoutine("PlayerName"));
         }
 
+        /// <summary>
+        /// Call when the ui keyboard is used.
+        /// </summary>
+        /// <param name="key">The context sent from the keyboard.</param>
         public void OnKeyboardClosed(string key)
         {
             if (key == "PlayerName")
             {
-                //keyboard.EnableKeyboard("RoomName");
                 StartCoroutine(DelayPanelRoutine("RoomName"));
             }
             else if (key == "RoomName")
@@ -125,6 +126,9 @@
             keyboard.EnableKeyboard(keyboardMenu);
         }
 
+        /// <summary>
+        /// Call when the leave game button is pressed.
+        /// </summary>
         public void OnLeaveGamePressed()
         {
             uiLeaveRoomEvent?.Raise();
@@ -178,6 +182,10 @@
             UpdatePlayerList();
         }
 
+        /// <summary>
+        /// Call to reset the menu state to non-connected.
+        /// Use if the player leaves a room by force rather than choice.
+        /// </summary>
         public void OnNetworkFail()
         {
             UpdatePlayerList();

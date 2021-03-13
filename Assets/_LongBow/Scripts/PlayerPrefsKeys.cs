@@ -1,4 +1,7 @@
-﻿namespace LongBow
+﻿/// <summary>
+/// Use this to avoid having magic strings where player prefs keys are used.
+/// </summary>
+namespace LongBow
 {
     public static class PlayerPrefsKeys
     {

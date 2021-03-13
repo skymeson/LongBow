@@ -1,4 +1,7 @@
-﻿namespace LongBow
+﻿/// <summary>
+/// Adds photon voice chat to a network avatar.
+/// </summary>
+namespace LongBow
 {
     using Photon.Pun;
     using Photon.Voice.Unity;
@@ -32,6 +35,8 @@
             }
         }
 
+        //TODO:
+        // this don't work...
         private void Update()
         {
             // move mouth when talking
@@ -68,7 +73,10 @@
                 return;
             }
 
-            // SETTINGS FOR VOICE SOURCE
+            // TODO:
+            // quest voice is wierd
+            // is this needed?
+
             //_audio.spatialBlend = 0;
             //_audio.spatialize = false;
             //_audio.minDistance = 0;

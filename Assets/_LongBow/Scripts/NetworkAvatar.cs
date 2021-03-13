@@ -1,4 +1,7 @@
-﻿namespace LongBow
+﻿/// <summary>
+/// Used to sync a players avatar (head and hands) over PUN.
+/// </summary>
+namespace LongBow
 {
     using Photon.Pun;
     using System;
@@ -70,10 +73,16 @@
             }
         }
 
-        // TODO:
-        // lerp to hide lag
+        /// <summary>
+        /// Send and receive the network stream.
+        /// </summary>
+        /// <param name="stream">PUN stuff.</param>
+        /// <param name="info">PUN stuff.</param>
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
+            // TODO:
+            // lerp to hide lag
+
             if (stream.IsWriting)
             {
                 // send transform info

@@ -1,4 +1,7 @@
-﻿namespace LongBow
+﻿/// <summary>
+/// A world-space keyboard used to input text.
+/// </summary>
+namespace LongBow
 {
     using UnityEngine;
     using UnityEngine.UI;
@@ -18,6 +21,10 @@
             DisableKeyboard();
         }
 
+        /// <summary>
+        /// Show and setup the keyboard.
+        /// </summary>
+        /// <param name="key">Used to set the context of the keyboard text input.</param>
         public void EnableKeyboard(string key)
         {
             currentKey = key;
@@ -48,12 +55,19 @@
             keyboardObject.SetActive(false);
         }
 
+        /// <summary>
+        /// Add a character to the input string.
+        /// </summary>
+        /// <param name="characterToAdd">The character to be added.</param>
         public void AddCharacter(string characterToAdd)
         {
             currentValue += characterToAdd;
             textDisplay.text = currentValue;
         }
 
+        /// <summary>
+        /// Remove the last character from the input string.
+        /// </summary>
         public void DeleteCharacter()
         {
             if (currentValue.Length == 0) return;
@@ -62,6 +76,9 @@
             textDisplay.text = _updatedString;
         }
 
+        /// <summary>
+        /// Submit the string to the keyboards calling context.
+        /// </summary>
         public void SubmitString()
         {
             if (string.IsNullOrEmpty(currentValue)) return;
@@ -72,7 +89,10 @@
             CallbackMenu?.OnKeyboardClosed(_updatedKey);
         }
 
-        public void OnNetworkFail()
+        /// <summary>
+        /// Call to disable the keyboard.
+        /// </summary>
+        public void OnDisableKeyboardEvent()
         {
             DisableKeyboard();
         }

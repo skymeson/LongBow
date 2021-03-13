@@ -1,4 +1,7 @@
-﻿namespace LongBow
+﻿/// <summary>
+/// Add to a worldspace canvas to automatically set the camera to Camera.main.
+/// </summary>
+namespace LongBow
 {
     using UnityEngine;
 

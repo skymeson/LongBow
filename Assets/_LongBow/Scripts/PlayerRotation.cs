@@ -1,11 +1,14 @@
-﻿namespace LongBow
+﻿/// <summary>
+/// Allows player to rotate. This is designed to be used with a single controller.
+/// </summary>
+namespace LongBow
 {
     using ScriptableObjectArchitecture;
     using System;
     using UnityEngine;
     using UnityEngine.InputSystem;
 
-    public class CustomRotationControllerV2 : MonoBehaviour
+    public class PlayerRotation : MonoBehaviour
     {
         [Header("Input")]
         [SerializeField] private InputActionReference rotateAction = default;
@@ -72,7 +75,6 @@
                 playerToRotate.rotation = Quaternion.Euler(new Vector3(playerToRotate.eulerAngles.x, playerToRotate.eulerAngles.y + rotationAmount, playerToRotate.eulerAngles.z));
                 rotationEvent?.Raise();
             }
-
         }
     }
 }

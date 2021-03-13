@@ -1,10 +1,13 @@
-﻿namespace LongBow
+﻿/// <summary>
+/// Single for handling the players connection to PUN.
+/// </summary>
+namespace LongBow
 {
     using Photon.Pun;
     using ScriptableObjectArchitecture;
     using UnityEngine;
 
-    public class CustomNetworkManager : MonoBehaviourPunCallbacks
+    public class NetworkManager : MonoBehaviourPunCallbacks
     {
         [SerializeField] private GameObject networkPrefab = default;
         [SerializeField] private GameEvent networkFailEvent = default;
@@ -12,7 +15,7 @@
         private readonly string ppName = PlayerPrefsKeys.PlayerName;
         private readonly string rName = PlayerPrefsKeys.RoomName;
 
-        public static CustomNetworkManager Instance { get; private set; }
+        public static NetworkManager Instance { get; private set; }
         public static string PlayerName { get; set; }
         public static string RoomName { get; set; }
 
@@ -30,6 +33,9 @@
             }
         }
 
+        /// <summary>
+        /// Call when the player wants to join a room.
+        /// </summary>
         public void JoinRoom()
         {
             if (PhotonNetwork.InRoom) return;
@@ -51,6 +57,9 @@
             PhotonNetwork.ConnectUsingSettings();
         }
 
+        /// <summary>
+        /// Call when the player wants to leave their current room.
+        /// </summary>
         public void LeaveRoom()
         {
             if (PhotonNetwork.InRoom)

@@ -1,4 +1,7 @@
-﻿namespace LongBow
+﻿/// <summary>
+/// A worldspace canvas and text used to show an in-game console.
+/// </summary>
+namespace LongBow
 {
     using UnityEngine;
     using UnityEngine.UI;
@@ -21,6 +24,10 @@
             }
         }
 
+        /// <summary>
+        /// Add a message to the console.
+        /// </summary>
+        /// <param name="message">The message.</param>
         public static void Log(string message)
         {
             if (string.IsNullOrEmpty(message)) return;

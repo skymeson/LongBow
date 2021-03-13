@@ -1,11 +1,14 @@
-﻿namespace LongBow
+﻿/// <summary>
+/// Used to raycast and interact with UI elements with the CustomUiElement component.
+/// </summary>
+namespace LongBow
 {
     using ScriptableObjectArchitecture;
     using System;
     using UnityEngine;
     using UnityEngine.InputSystem;
 
-    public class CustomVrUiPointer : MonoBehaviour
+    public class CustomUiPointer : MonoBehaviour
     {
         [Header("Input")]
         [SerializeField] private InputActionReference uiInputAction = default;
@@ -23,14 +26,21 @@
         [SerializeField] private int deselectAfterFrames = 10;
         
         private Transform reticleTransform = default;
-        private CustomVrUiElement currentElement = null;
+        private CustomUiElement currentElement = null;
         private Transform thisTransform;
         private int invalidFrames = 0;
         private bool canInteract = true;
+        private Action onCanInteractVariableChanged;
 
         private void Awake()
         {
             thisTransform = transform;
+            onCanInteractVariableChanged = delegate { OnChanged(); };
+        }
+
+        private void Start()
+        {
+
             lineRenderer.enabled = false;
             invalidFrames = 0;
             canInteract = true;
@@ -41,8 +51,7 @@
         {
             uiInputAction.action.Enable();
             uiInputAction.action.performed += UiActionPerformed;
-            //canInteractVariable.AddListener(OnInteractVariableChanged);
-            canInteractVariable.AddListener(OnChanged);
+            canInteractVariable.AddListener(onCanInteractVariableChanged);
             lineRenderer.enabled = false;
             reticleObject.SetActive(false);
             invalidFrames = 0;
@@ -52,17 +61,12 @@
         private void OnDisable()
         {
             uiInputAction.action.Disable();
-            //canInteractVariable.RemoveListener(OnInteractVariableChanged);
-            canInteractVariable.RemoveListener(OnChanged);
+            canInteractVariable.RemoveListener(onCanInteractVariableChanged);
         }
 
         private void OnChanged() 
         { 
             canInteract = canInteractVariable.Value; 
-        }
-        private void OnInteractVariableChanged(bool value)
-        {
-            canInteract = value;
         }
 
         private void UiActionPerformed(InputAction.CallbackContext obj)
@@ -95,7 +99,7 @@
                 reticleTransform.position = _hitTransform.position;
                 reticleTransform.rotation = Quaternion.FromToRotation(reticleTransform.up, _hit.normal) * reticleTransform.rotation;
 
-                var _foundElement = _hitTransform.GetComponent<CustomVrUiElement>();
+                var _foundElement = _hitTransform.GetComponent<CustomUiElement>();
                 if (_foundElement == null)
                 {
                     currentElement = null;
@@ -148,6 +152,9 @@
             canInteract = true;
         }
 
+        /// <summary>
+        /// Use to disable the ability for the user to interact iwth custom ui elements.
+        /// </summary>
         public void DisableUiInteraction()
         {
             if (currentElement != null)

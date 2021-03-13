@@ -1,11 +1,14 @@
-﻿namespace LongBow
+﻿/// <summary>
+/// Handles the Photon Voice settings.
+/// </summary>
+namespace LongBow
 {
     using Photon.Voice.Unity;
     using UnityEngine;
 
-    public class CustomVoiceController : MonoBehaviour
+    public class VoiceChatManager : MonoBehaviour
     {
-        private static CustomVoiceController instance;
+        private static VoiceChatManager instance;
         private Recorder recorder;
 
         private readonly string micEnabledKey = PlayerPrefsKeys.MicEnabled;
@@ -30,6 +33,9 @@
             OnSettingsUpdated();
         }
 
+        /// <summary>
+        /// Call when mic settings are altered to match the recorder settings.
+        /// </summary>
         public void OnSettingsUpdated()
         {
             bool _micEnabled = true;
@@ -46,8 +52,8 @@
             recorder.TransmitEnabled = _micEnabled;
             recorder.DebugEchoMode = _micEcho;
 
-            Debug.Log("Mic Enabled: " + _micEnabled);
-            Debug.Log("Echo Mic: " + _micEcho);
+            //Debug.Log("Mic Enabled: " + _micEnabled);
+            //Debug.Log("Echo Mic: " + _micEcho);
         }
     }
 }
