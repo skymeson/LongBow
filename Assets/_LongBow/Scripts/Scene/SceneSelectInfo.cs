@@ -3,11 +3,13 @@
 /// </summary>
 namespace LongBow
 {
+    using Photon.Pun;
+    using Photon.Realtime;
     using ScriptableObjectArchitecture;
     using UnityEngine;
     using UnityEngine.UI;
 
-    public class SceneSelectInfo : MonoBehaviour
+    public class SceneSelectInfo : MonoBehaviourPunCallbacks
     {
         [Header("Variables and Events")]
         [SerializeField] private Vector3Reference startingPositionVariable = default;
@@ -28,20 +30,42 @@ namespace LongBow
             }
         }
 
-        private void OnEnable()
+        public override void OnEnable()
         {
             button.onClick.AddListener(SetSceneInfo);
+            if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
+            {
+                button.interactable = false;
+            }
+            base.OnEnable();
         }
 
-        private void OnDisable()
+        public override void OnDisable()
         {
             button.onClick.RemoveListener(SetSceneInfo);
+            base.OnDisable();
         }
 
         private void SetSceneInfo()
         {
             startingPositionVariable.Value = startingPosition;
             loadSceneEvent.Raise(sceneIndex);
+        }
+
+        public override void OnJoinedRoom()
+        {
+            if (PhotonNetwork.IsMasterClient) return;
+            button.interactable = false;
+        }
+
+        public override void OnLeftRoom()
+        {
+            button.interactable = true;
+        }
+
+        public override void OnDisconnected(DisconnectCause cause)
+        {
+            button.interactable = true;
         }
     }
 }

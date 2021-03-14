@@ -755,7 +755,13 @@ MonoBehaviour:
   leftHandTransform: {fileID: 2765400173830527069}
   rightHandTransform: {fileID: 5469102220472424286}
   nameTagText: {fileID: 3213321896072544414}
-  renderersToHide: []
+  renderersToHide:
+  - {fileID: 675286026571471403}
+  - {fileID: 1689946553807423370}
+  - {fileID: 7872545085286806904}
+  - {fileID: 4317606895927683185}
+  - {fileID: 6639294785088540981}
+  - {fileID: 1882089631090643194}
 --- !u!114 &5829378136529898830
 MonoBehaviour:
   m_ObjectHideFlags: 0

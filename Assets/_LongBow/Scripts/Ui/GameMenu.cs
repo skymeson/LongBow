@@ -7,6 +7,10 @@ namespace LongBow
     using UnityEngine;
     using UnityEngine.UI;
 
+    // TODO:
+    // add mic settings to this menu also
+    // player should be able to mute and echo while in game
+
     public class GameMenu : MonoBehaviour
     {
         [Header("Object Links")]

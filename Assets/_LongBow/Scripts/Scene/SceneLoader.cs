@@ -3,7 +3,11 @@
 /// </summary>
 namespace LongBow
 {
+    using ExitGames.Client.Photon;
+    using Photon.Pun;
+    using Photon.Realtime;
     using ScriptableObjectArchitecture;
+    using System.Collections;
     using UnityEngine;
     using UnityEngine.SceneManagement;
 
@@ -13,9 +17,8 @@ namespace LongBow
         [SerializeField] private int playerOnlySceneIndex = 0;
         [SerializeField] private int menuSceneIndex = 1;
 
-        [Header("Variables and Events")]
+        [Header("Events")]
         [SerializeField] private Vector3GameEvent teleportPlayerEvent = default;
-        [SerializeField] private Vector3Reference startLocation = default;
 
         [Header("Settings")]
         [SerializeField] private Vector3 playerMenuScenePosition = new Vector3(0, -100, 0);
@@ -28,7 +31,7 @@ namespace LongBow
             if (Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
+                //DontDestroyOnLoad(gameObject);
             }
             else
             {
@@ -80,6 +83,47 @@ namespace LongBow
         {
             // ignore this if it's the player or menu scene
             if (sceneIndex < 2) return;
+            // ignore if online and not host
+            if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient) return;
+            // make sure scene isn't already loaded
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                if (SceneManager.GetSceneAt(i).buildIndex == sceneIndex)
+                {
+                    Debug.LogError("Trying to load a scene that is already loaded.", this);
+                    return;
+                }
+            }
+            // if online send event
+            if (PhotonNetwork.InRoom && PhotonNetwork.IsMasterClient)
+            {
+                SendNetworkEvent(sceneIndex);
+            }
+            // load new scene async
+            sceneLoadOperation = SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
+            sceneLoadOperation.completed += GameSceneLoadOperationCompleted;
+        }
+
+        private void SendNetworkEvent(int sceneIndex)
+        {
+            // bytes take less data to send
+            object[] content = new object[] { (byte)sceneIndex };
+            // don't need to send to host
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.Others };
+            // send reliable so everyone will get it
+            PhotonNetwork.RaiseEvent(NetworkEventManager.LoadGameSceneEvent, content, raiseEventOptions, SendOptions.SendReliable);
+        }
+
+        /// <summary>
+        /// Call when the game host selects a scene.
+        /// </summary>
+        /// <param name="sceneIndex">The scene to load.</param>
+        public void OnNetworkLoadSceneEvent(int sceneIndex)
+        {
+            // ignore this if it's the player or menu scene
+            if (sceneIndex < 2) return;
+            // ignore if online and host, already done
+            if (PhotonNetwork.InRoom && PhotonNetwork.IsMasterClient) return;
             // make sure scene isn't already loaded
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {
@@ -96,8 +140,30 @@ namespace LongBow
 
         private void GameSceneLoadOperationCompleted(AsyncOperation obj)
         {
+            StartCoroutine(SceneLoadRoutine());
+        }
+
+        // TODO:
+        // this ideally shouldn't rely on GameManager code
+        private IEnumerator SceneLoadRoutine()
+        {
+            // wait for GameManager singleton to be created
+            int attempts = 0;
+            while (GameManager.Instance == null && attempts < 1000)
+            {
+                attempts++;
+                yield return null;
+            }
+
+            if(GameManager.Instance == null || GameManager.Instance.GetStartingPosition == null)
+            {
+                Debug.LogError("Game scene not setup properly, cannot find starting position.", this);
+            }
+
+            // get levels starting position
+            var _startingPosition = GameManager.Instance.GetStartingPosition;
             // teleport player to starting location
-            teleportPlayerEvent.Raise(startLocation.Value);
+            teleportPlayerEvent.Raise(_startingPosition.position);
             // unload menu scene
             SceneManager.UnloadSceneAsync(menuSceneIndex);
             // reset

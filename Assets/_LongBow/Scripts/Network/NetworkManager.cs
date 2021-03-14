@@ -4,6 +4,7 @@
 namespace LongBow
 {
     using Photon.Pun;
+    using Photon.Realtime;
     using ScriptableObjectArchitecture;
     using UnityEngine;
 
@@ -19,13 +20,15 @@ namespace LongBow
         public static string PlayerName { get; set; }
         public static string RoomName { get; set; }
 
+        private GameObject networkAvatar;
+
 
         private void Awake()
         {
             if (Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(this);
+                //DontDestroyOnLoad(this);
             }
             else
             {
@@ -74,7 +77,7 @@ namespace LongBow
 
         private void SpawnAvatar()
         {
-            PhotonNetwork.Instantiate(networkPrefab.name, Vector3.zero, Quaternion.identity);
+            networkAvatar = PhotonNetwork.Instantiate(networkPrefab.name, Vector3.zero, Quaternion.identity);
             Debug.Log("Spawning network avatar for " + PhotonNetwork.NickName);
         }
 
@@ -101,7 +104,19 @@ namespace LongBow
 
         public override void OnLeftRoom()
         {
+            if (networkAvatar != null)
+            {
+                //Destroy(networkAvatar);
+            }
             PhotonNetwork.Disconnect();
+        }
+
+        public override void OnDisconnected(DisconnectCause cause)
+        {
+            if(networkAvatar != null)
+            {
+                //Destroy(networkAvatar);
+            }
         }
     }
 }

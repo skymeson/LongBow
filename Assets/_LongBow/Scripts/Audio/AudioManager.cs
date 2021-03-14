@@ -15,8 +15,8 @@ namespace LongBow
             if (Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
                 musicSource = GetComponent<AudioSource>();
+                //DontDestroyOnLoad(gameObject);
             }
             else
             {

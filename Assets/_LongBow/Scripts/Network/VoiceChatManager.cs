@@ -8,7 +8,7 @@ namespace LongBow
 
     public class VoiceChatManager : MonoBehaviour
     {
-        private static VoiceChatManager instance;
+        public static VoiceChatManager Instance;
         private Recorder recorder;
 
         private readonly string micEnabledKey = PlayerPrefsKeys.MicEnabled;
@@ -16,11 +16,11 @@ namespace LongBow
 
         private void Awake()
         {
-            if (instance == null)
+            if (Instance == null)
             {
-                instance = this;
+                Instance = this;
                 recorder = GetComponent<Recorder>();
-                DontDestroyOnLoad(gameObject);
+                //DontDestroyOnLoad(gameObject);
             }
             else
             {
