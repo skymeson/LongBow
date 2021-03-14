@@ -70,7 +70,7 @@ namespace LongBow
 
             if (_closestAnchor == null)
             {
-                Debug.LogError("You messed up the menu teleport code.", this);
+                Debug.LogError("Menu teleport anchor should never be null.", this);
                 return;
             }
 

@@ -115,6 +115,17 @@ namespace LongBow
             isValidDestination = false;
         }
 
+        /// <summary>
+        /// Call this to force the player to teleport to a location.
+        /// </summary>
+        /// <param name="destination">The destination.</param>
+        public void ForcePlayerTeleport(Vector3 destination)
+        {
+            CancelTeleportAttempt();
+            StartCoroutine(TeleportRoutine(destination));
+            isValidDestination = false;
+        }
+
         private void OnCanTeleportValueChanged()
         {
             if (!canTeleportVariable.Value) CancelTeleportAttempt();

@@ -770,7 +770,7 @@ MonoBehaviour:
   rotateAction: {fileID: -6493913391331992944, guid: 02569e9c7cf6a894c94a0bee795fe816,
     type: 3}
   snapAmount: 15
-  deadZone: 0.2
+  deadZone: 0.5
   playerToRotate: {fileID: 2879077508987223485}
   rotationEvent: {fileID: 11400000, guid: b4a8afbcd47df75418002b4bfeb7800b, type: 2}
 --- !u!1 &2879077508987223475
@@ -1448,7 +1448,7 @@ MonoBehaviour:
   rotateAction: {fileID: 1010738217276881514, guid: 02569e9c7cf6a894c94a0bee795fe816,
     type: 3}
   snapAmount: 15
-  deadZone: 0.2
+  deadZone: 0.5
   playerToRotate: {fileID: 2879077508987223485}
   rotationEvent: {fileID: 11400000, guid: b4a8afbcd47df75418002b4bfeb7800b, type: 2}
 --- !u!1 &2879077510335387536
