@@ -18,6 +18,7 @@ namespace LongBow
         [SerializeField] private int menuSceneIndex = 1;
 
         [Header("Events")]
+        [SerializeField] private GameEvent sceneChangingEvent = default;
         [SerializeField] private Vector3GameEvent teleportPlayerEvent = default;
 
         [Header("Settings")]
@@ -31,7 +32,6 @@ namespace LongBow
             if (Instance == null)
             {
                 Instance = this;
-                //DontDestroyOnLoad(gameObject);
             }
             else
             {
@@ -71,6 +71,7 @@ namespace LongBow
                 }
             }
             // load menu scene async
+            sceneChangingEvent?.Raise();
             sceneLoadOperation = SceneManager.LoadSceneAsync(menuSceneIndex, LoadSceneMode.Additive);
             sceneLoadOperation.completed += MenuSceneLoadOperationCompleted;
         }
@@ -100,6 +101,7 @@ namespace LongBow
                 SendNetworkEvent(sceneIndex);
             }
             // load new scene async
+            sceneChangingEvent?.Raise();
             sceneLoadOperation = SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
             sceneLoadOperation.completed += GameSceneLoadOperationCompleted;
         }
@@ -134,6 +136,7 @@ namespace LongBow
                 }
             }
             // load new scene async
+            sceneChangingEvent?.Raise();
             sceneLoadOperation = SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
             sceneLoadOperation.completed += GameSceneLoadOperationCompleted;
         }

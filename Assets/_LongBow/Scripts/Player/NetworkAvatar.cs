@@ -45,10 +45,10 @@ namespace LongBow
 
             try
             {
-                var localPlayerItems = FindObjectsOfType<AvatarItemLink>();
-                localHead = localPlayerItems.Where(x => x.AvatarItem == AvatarItemLink.AvatarItems.Head).First().transform;
-                localLeftHand = localPlayerItems.Where(x => x.AvatarItem == AvatarItemLink.AvatarItems.LeftHand).First().transform;
-                localRightHand = localPlayerItems.Where(x => x.AvatarItem == AvatarItemLink.AvatarItems.RightHand).First().transform;
+                var _localPlayerItems = FindObjectsOfType<AvatarItemLink>();
+                localHead = _localPlayerItems.Where(x => x.AvatarItem == AvatarItemLink.AvatarItems.Head).First().transform;
+                localLeftHand = _localPlayerItems.Where(x => x.AvatarItem == AvatarItemLink.AvatarItems.LeftHand).First().transform;
+                localRightHand = _localPlayerItems.Where(x => x.AvatarItem == AvatarItemLink.AvatarItems.RightHand).First().transform;
 
                 headTransform.parent = localHead;
                 headTransform.localPosition = Vector3.zero;

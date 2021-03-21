@@ -18,6 +18,7 @@ namespace LongBow
         }
 
         [SerializeField] private AvatarItems thisItem = default;
+        [SerializeField] private GameObject modelRoot = default;
 
         public AvatarItems AvatarItem { get; private set; }
 
@@ -25,5 +26,7 @@ namespace LongBow
         {
             AvatarItem = thisItem;
         }
+
+        public GameObject GetModel { get { return modelRoot; } }
     }
 }

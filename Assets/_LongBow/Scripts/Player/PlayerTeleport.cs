@@ -12,16 +12,12 @@ namespace LongBow
 
     public class PlayerTeleport : MonoBehaviour
     {
-        // TODO:
-        // the line renderer and validity is a bit janky
-        // implement teleport anchors
-        // implement invalid teleport component
-
         #region variables
 
         [Header("Object Links")]
         [SerializeField] private Transform destinationTarget = default;
         [SerializeField] private GameObject targetMarker = default;
+        [SerializeField] private GameObject invalidTargetMarker = default;
         [SerializeField] private Transform playerToTeleport = default;
         [SerializeField] private Transform startingLineTransform = default;
 
@@ -29,8 +25,9 @@ namespace LongBow
         [SerializeField] private InputActionReference teleportAction = default;
 
         [Header("Events")]
-        [SerializeField] private GameEvent beginTeleportEvent = default;
-        [SerializeField] private GameEvent afterTeleportEvent = default;
+        [SerializeField] private GameEvent aimTeleportEvent = default;
+        [SerializeField] private GameEvent preTeleportEvent = default;
+        [SerializeField] private GameEvent postTeleportEvent = default;
         [SerializeField] private GameEvent cancelTeleportEvent = default;
 
         [Header("Variables")]
@@ -42,14 +39,16 @@ namespace LongBow
         [SerializeField] private Color invalidTeleportColor = Color.red;
 
         [Header("Layers")]
-        [SerializeField] private LayerMask CollisionLayers;
-        [SerializeField] private LayerMask ValidLayers;
+        [SerializeField] private LayerMask allCollisionLayers = default;
+        [SerializeField] private LayerMask validCollisionLayers = default;
 
         [Header("Settings")]
         [SerializeField] private int segmentCount = 100;
         [SerializeField] private float simulationVelocity = 500f;
+        [SerializeField] private float simulationGravity = 10;
         [SerializeField] private float segmentScale = 0.5f;
-        [SerializeField] private float teleportDelay = 0.2f;
+        [SerializeField] private float teleportPreDelay = 0.2f;
+        [SerializeField] private float teleportPostDelay = 0.2f;
         [SerializeField] private float maxSlope = 60f;
         [SerializeField] private int allowedInvalidFrames = 10;
 
@@ -57,9 +56,9 @@ namespace LongBow
         private bool isAiming = false;
         private bool wasAiming = false;
         private bool isValidDestination = false;
-        private WaitForSeconds routineDelay;
+        private WaitForSeconds routinePreDelay;
+        private WaitForSeconds routinePostDelay;
         private int invalidFrames = 0;
-        private float initialLineWidth;
         private Collider hitObject;
         private Vector3 hitVector;
         private float hitAngle;
@@ -77,8 +76,8 @@ namespace LongBow
 
         private void Start()
         {
-            routineDelay = new WaitForSeconds(teleportDelay);
-            initialLineWidth = lineRenderer.startWidth;
+            routinePreDelay = new WaitForSeconds(teleportPreDelay);
+            routinePostDelay = new WaitForSeconds(teleportPostDelay);
             if (lineRenderer.transform.parent != null)
             {
                 lineRenderer.transform.parent = null;
@@ -92,7 +91,7 @@ namespace LongBow
             teleportAction.action.Enable();
             teleportAction.action.performed += BeginTeleportActionPerformed;
             teleportAction.action.canceled += EndTeleportActionPerformed;
-            beginTeleportEvent.AddListener(onTeleportEvent);
+            aimTeleportEvent.AddListener(onTeleportEvent);
             canTeleportVariable.AddListener(onCanTeleportValueChanged);
             lineRenderer.enabled = false;
             teleportStarted = false;
@@ -107,7 +106,7 @@ namespace LongBow
             teleportAction.action.Disable();
             teleportAction.action.performed -= BeginTeleportActionPerformed;
             teleportAction.action.canceled -= EndTeleportActionPerformed;
-            beginTeleportEvent.RemoveListener(onTeleportEvent);
+            aimTeleportEvent.RemoveListener(onTeleportEvent);
             canTeleportVariable.RemoveListener(onCanTeleportValueChanged);
             teleportStarted = false;
             isAiming = false;
@@ -135,7 +134,7 @@ namespace LongBow
         {
             if (!canTeleportVariable.Value) return;
             teleportStarted = true;
-            beginTeleportEvent?.Raise();
+            aimTeleportEvent?.Raise();
         }
 
         private void EndTeleportActionPerformed(InputAction.CallbackContext obj)
@@ -177,17 +176,21 @@ namespace LongBow
             if (isAiming)
             {
                 lineRenderer.enabled = true;
-                Color _updatedColor = isValidDestination ? validTeleportColor : invalidTeleportColor;
+                targetMarker.SetActive(isValidDestination);
+                invalidTargetMarker.SetActive(!isValidDestination);
+
+                // TODO:  figure out color with URP
+                //Color _updatedColor = isValidDestination ? validTeleportColor : invalidTeleportColor;
                 if (!isValidDestination && invalidFrames < allowedInvalidFrames)
                 {
-                    _updatedColor = validTeleportColor;
+                    invalidTargetMarker.SetActive(false);
+                    //_updatedColor = validTeleportColor;
                 }
-                _updatedColor.a = 1;
-                lineRenderer.startColor = _updatedColor;
+                //_updatedColor.a = 1;
+                //lineRenderer.startColor = _updatedColor;
                 //_updatedColor.a = 0;
-                lineRenderer.endColor = _updatedColor;
-                lineRenderer.startWidth = initialLineWidth;
-                targetMarker.SetActive(isValidDestination);
+                //lineRenderer.endColor = _updatedColor;
+                //lineRenderer.startWidth = initialLineWidth;
             }
         }
 
@@ -205,6 +208,7 @@ namespace LongBow
             isAiming = false;
             lineRenderer.enabled = false;
             targetMarker.SetActive(false);
+            invalidTargetMarker.SetActive(false);
             if (!isValidDestination)
             {
                 cancelTeleportEvent?.Raise();
@@ -216,22 +220,21 @@ namespace LongBow
 
         private IEnumerator TeleportRoutine(Vector3 destination)
         {
-            yield return routineDelay;
+            preTeleportEvent?.Raise();
+            yield return routinePreDelay;
             playerToTeleport.position = destination;
-            afterTeleportEvent?.Raise();
+            yield return routinePostDelay;
+            postTeleportEvent?.Raise();
         }
 
         private void CalculateTeleportLine()
         {
             isValidDestination = false;
-            bool isDestination = false;
             hitObject = null;
 
             Vector3[] segments = new Vector3[segmentCount];
             segments[0] = startingLineTransform.position;
-            Vector3 segVelocity = startingLineTransform.forward *
-                simulationVelocity *
-                Time.fixedUnscaledDeltaTime;
+            Vector3 segVelocity = startingLineTransform.forward * simulationVelocity * Time.deltaTime;
 
             for (int i = 1; i < segmentCount; i++)
             {
@@ -242,18 +245,24 @@ namespace LongBow
                 }
 
                 float segTime = (segVelocity.sqrMagnitude != 0) ? segmentScale / segVelocity.magnitude : 0;
-                segVelocity = segVelocity + Physics.gravity * segTime;
+                segVelocity += (Vector3.down * simulationGravity) * segTime;
 
-                if (Physics.Raycast(segments[i - 1], segVelocity, out hit, segmentScale, CollisionLayers))
+                if (Physics.Raycast(segments[i - 1], segVelocity, out hit, segmentScale, allCollisionLayers))
                 {
                     hitObject = hit.collider;
                     segments[i] = segments[i - 1] + segVelocity.normalized * hit.distance;
-                    segVelocity = segVelocity - Physics.gravity * (segmentScale - hit.distance) / segVelocity.magnitude;
-                    hitAngle = Vector3.Angle(transform.up, hit.normal);
-                    targetMarker.transform.position = segments[i];
-                    targetMarker.transform.rotation =
-                        Quaternion.FromToRotation(targetMarker.transform.up, hit.normal) *
-                        targetMarker.transform.rotation;
+                    segVelocity -= (Vector3.down * simulationGravity) * (segmentScale - hit.distance) / segVelocity.magnitude;
+                    hitAngle = Vector3.Angle(playerToTeleport.up, hit.normal);
+
+                    destinationTarget.position = segments[i];
+                    destinationTarget.rotation = Quaternion.FromToRotation(destinationTarget.up, hit.normal) * destinationTarget.rotation;
+
+                    //targetMarker.transform.position = segments[i];
+                    //targetMarker.transform.rotation = Quaternion.FromToRotation(targetMarker.transform.up, hit.normal) * targetMarker.transform.rotation;
+
+                    //invalidTargetMarker.transform.position = segments[i];
+                    //invalidTargetMarker.transform.rotation = Quaternion.FromToRotation(invalidTargetMarker.transform.up, hit.normal) * invalidTargetMarker.transform.rotation;
+
                     hitVector = segments[i];
                 }
                 else
@@ -264,21 +273,17 @@ namespace LongBow
 
             isValidDestination = hitObject != null;
 
-            if (isValidDestination && !isDestination)
+            if (isValidDestination)
             {
+                // check slope
                 if (hitAngle > maxSlope)
                 {
                     isValidDestination = false;
                 }
-
-                // TODO:
-                //if (_hitObject.GetComponent<InvalidTeleportArea>() != null)
-                //{
-                //    isValidDestination = false;
-                //}
-
-                var _validLayers = ValidLayers == (ValidLayers | (1 << hitObject.gameObject.layer));
-                if (!_validLayers)
+                // check layer
+                var _isValidLayer = 
+                    (validCollisionLayers == (validCollisionLayers | (1 << hitObject.gameObject.layer)));
+                if (!_isValidLayer)
                 {
                     isValidDestination = false;
                 }
