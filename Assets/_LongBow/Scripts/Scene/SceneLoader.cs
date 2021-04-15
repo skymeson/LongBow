@@ -19,7 +19,7 @@ namespace LongBow
 
         //[Header("Events")]
         //[SerializeField] private GameEvent sceneChangingEvent = default;
-        //[SerializeField] private Vector3GameEvent teleportPlayerEvent = default;
+        [SerializeField] private Vector3GameEvent teleportPlayerEvent = default;
 
         [Header("Settings")]
         [SerializeField] private Vector3 playerMenuScenePosition = new Vector3(0, -100, 0);
@@ -166,7 +166,7 @@ namespace LongBow
             // get levels starting position
             var _startingPosition = GameManager.Instance.GetStartingPosition;
             // teleport player to starting location
-            //teleportPlayerEvent.Raise(_startingPosition.position);
+            teleportPlayerEvent.Raise(_startingPosition.position);
             // unload menu scene
             SceneManager.UnloadSceneAsync(menuSceneIndex);
             // reset
@@ -176,7 +176,7 @@ namespace LongBow
         private void MenuSceneLoadOperationCompleted(AsyncOperation obj)
         {
             // teleport player to starting location
-            //teleportPlayerEvent.Raise(playerMenuScenePosition);
+            teleportPlayerEvent.Raise(playerMenuScenePosition);
             // unload game scene
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {
