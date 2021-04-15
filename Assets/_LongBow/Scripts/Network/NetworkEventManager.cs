@@ -8,7 +8,7 @@ namespace LongBow
     public class NetworkEventManager : MonoBehaviour
     {
         public const byte LoadGameSceneEvent = 0;
-        [SerializeField] private IntGameEvent loadSceneEvent = default;
+        //[SerializeField] private IntGameEvent loadSceneEvent = default;
 
         private void OnEnable()
         {
@@ -36,7 +36,8 @@ namespace LongBow
         private void OnLoadSceneEvent(object[] data)
         {
             int sceneIndex = (int)data[0];
-            loadSceneEvent.Raise(sceneIndex);
+            //loadSceneEvent.Raise(sceneIndex);
+            SceneLoader.Instance.OnNetworkLoadSceneEvent(sceneIndex); 
             Debug.Log("PUN Event: scene change to: " + sceneIndex);
         }
     }

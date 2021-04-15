@@ -11,9 +11,9 @@ namespace LongBow
 
     public class SceneSelectInfo : MonoBehaviourPunCallbacks
     {
-        [Header("Variables and Events")]
-        [SerializeField] private Vector3Reference startingPositionVariable = default;
-        [SerializeField] private IntGameEvent loadSceneEvent = default;
+        //[Header("Variables and Events")]
+        //[SerializeField] private Vector3Reference startingPositionVariable = default;
+        //[SerializeField] private IntGameEvent loadSceneEvent = default;
         [Header("Settings")]
         [SerializeField] private int sceneIndex = default;
         [SerializeField] private Vector3 startingPosition = default;
@@ -48,8 +48,9 @@ namespace LongBow
 
         private void SetSceneInfo()
         {
-            startingPositionVariable.Value = startingPosition;
-            loadSceneEvent.Raise(sceneIndex);
+            //startingPositionVariable.Value = startingPosition;
+            //loadSceneEvent.Raise(sceneIndex);
+            SceneLoader.Instance.LoadGameScene(sceneIndex);
         }
 
         public override void OnJoinedRoom()

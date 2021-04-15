@@ -11,7 +11,7 @@ namespace LongBow
     public class NetworkManager : MonoBehaviourPunCallbacks
     {
         [SerializeField] private GameObject networkPrefab = default;
-        [SerializeField] private GameEvent networkFailEvent = default;
+        //[SerializeField] private GameEvent networkFailEvent = default;
 
         private readonly string ppName = PlayerPrefsKeys.PlayerName;
         private readonly string rName = PlayerPrefsKeys.RoomName;
@@ -93,7 +93,7 @@ namespace LongBow
 
         public override void OnCreateRoomFailed(short returnCode, string message)
         {
-            networkFailEvent?.Raise();
+            //networkFailEvent?.Raise();
             Debug.LogError("Failed to create room: " + message, this);
         }
 
