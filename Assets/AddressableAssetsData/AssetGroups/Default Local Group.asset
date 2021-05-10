@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: 
+  m_GroupName: Default Local Group
+  m_Data:
+    m_SerializedData: []
+  m_GUID: fc504f4ce89da644a8352338c0d9a17c
+  m_SerializeEntries:
+  - m_GUID: 09bf3e004562ef64980887d9c05dd06f
+    m_Address: Assets/ScriptableObjects/EventChannel/LoadMenu_Channel.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: ab247416c29366c4ca8c792fe8a56d5e, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 4282dfd8ca4e76240ab60915a0acf4e3, type: 2}
+    - {fileID: 11400000, guid: 74d4987a3951e4a429a7c33ebcfca4d8, type: 2}
